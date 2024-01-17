@@ -1,46 +1,269 @@
-// ... (previous code)
+import Head from "next/head";
+import styled, { createGlobalStyle } from "styled-components";
+import { useState, useEffect, useRef } from "react";
+import axios from "axios";
+import { useSmoothCount } from "use-smooth-count";
 
-const discordIdLink = "https://discord.com/users/776757761701838858";
+export default function Home({ userCount }: { userCount: number }) {
+    const [userId, setUserId] = useState<null | string>(null);
+    const [userError, setUserError] = useState<string>();
+    const [copyState, setCopyState] = useState("Copy");
 
-// ... (remaining code)
+    const countRef = useRef<HTMLDivElement | null>(null);
+    const counter = useSmoothCount({ ref: countRef, target: userCount, duration: 3, curve: [0, 1, 0, 1] });
 
-<Container>
-    <Title>OpInsel profile readme 🏷️</Title>
-    <Paragraph>Utilize OpInsel to display your Discord Presence in your GitHub Profile</Paragraph>
-    <br />
-    {/* Replace the Input with the new content */}
-    <a href={discordIdLink}>
-        <img src="https://api.opinsel.de/api/776757761701838858?hideTimestamp=true&idleMessage=Just%20chillin'%20at%20the%20moment..." align="right" />
-    </a>
-    {/* Add new content for free space */}
-    <p>Free space next to the Discord ID image...</p>
-    {userId ? (
+    const copy = () => {
+        navigator.clipboard.writeText(
+            `[![Discord Presence](https://api.opinsel.de/api/${userId})](https://discord.com/users/${userId})`
+        );
+        setCopyState("Copied!");
+
+        setTimeout(() => setCopyState("Copy"), 1500);
+    };
+
+    
+<a href="https://discord.com/users/776757761701838858">
+ <img src="https://api.opinsel.de/api/776757761701838858?hideTimestamp=true&idleMessage=Just%20chillin'%20at%20the%20moment..." align="right" />
+</a>
+
+    
+    useEffect(() => {
+        (async () => {
+            try {
+                await axios.get(`/api/${userId}`);
+                setUserError(undefined);
+            } catch (error: any) {
+                console.log(error.response);
+                if (error.response.status === 404 && error.response.data.code == "user_not_monitored")
+                    setUserError(`OpInsel Staff, click to join the discord`);
+            }
+        })();
+    }, [userId]);
+
+    return (
         <>
-            <Output>
-                [![Discord Presence](https://api.opinsel.de/api/{userId})](https://discord.com/users/{userId})
-            </Output>
-            <ActionButton onClick={copy}>{copyState}</ActionButton>
-            <a
-                href="https://github.com/nils-afk"
-                target="_blank"
-                rel="noreferrer"
-            >
-                <ActionButton>Options</ActionButton>
-            </a>
-            <a
-                style={{ textDecoration: "none" }}
-                target="_blank"
-                href={userError && "https://discord.gg/wBuyUSAegK"}
-                rel="noreferrer"
-            >
-                <Example
-                    src={`/api/${userId}`}
-                    alt={`${userError || "Please provide a valid user ID!"}`}
-                    style={{ color: "#ff8787" }}
+            <GlobalStyle />
+            <Head>
+                <link rel="preconnect" href="https://fonts.gstatic.com" />
+                <link
+                    href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400&display=swap"
+                    rel="stylesheet"
                 />
-            </a>
+                <title>OpInsel for GitHub Profile</title>
+                <meta property="og:title" content="OpInsel for GitHub Profile" key="title" />
+                <meta
+                    name="description"
+                    content="Utilize OpInsel to display your Discord Presence in your GitHub Profile"
+                />
+                <meta
+                    name="og:description"
+                    content="Utilize OpInsel to display your Discord Presence in your GitHub Profile"
+                />
+            </Head>
+            <Main>
+                <Container>
+                    <Title>OpInsel profile readme 🏷️</Title>
+                    <Paragraph>Utilize OpInsel to display your Discord Presence in your GitHub Profile</Paragraph>
+                    <br />
+                    <Input onChange={el => setUserId(el.target.value)} placeholder="Enter your Discord ID" />
+                    {userId ? (
+                        <>
+                            <Output>
+                                [![Discord Presence](https://api.opinsel.de/api/{userId}
+                                )](https://discord.com/users/{userId})
+                            </Output>
+                            <ActionButton onClick={copy}>{copyState}</ActionButton>
+                            <a
+                                href="https://github.com/nils-afk"
+                                target="_blank"
+                                rel="noreferrer"
+                            >
+                                <ActionButton>Options</ActionButton>
+                            </a>
+                            <a
+                                style={{ textDecoration: "none" }}
+                                target="_blank"
+                                href={userError && "https://discord.gg/wBuyUSAegK"}
+                                rel="noreferrer"
+                            >
+                                <Example
+                                    src={`/api/${userId}`}
+                                    alt={`${userError || "Please provide a valid user ID!"}`}
+                                    style={{ color: "#ff8787" }}
+                                />
+                            </a>
+                        </>
+                    ) : null}
+                </Container>
+            </Main>
+            <FooterStat>
+                OpInsel Staff Api schaut 1 Person zu!
+            </FooterStat>
         </>
-    ) : null}
-</Container>
+    );
+}
 
-// ... (remaining code)
+export async function getServerSideProps(ctx: any) {
+    let userCount = await axios
+        .get("https://api.opinsel.de/api/getUserCount", { timeout: 1000 })
+        .then(res => res.data.count)
+        .catch(() => 1000);
+
+    return {
+        props: { userCount },
+    };
+}
+
+const GlobalStyle = createGlobalStyle`
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgb(64 68 78);
+    border-radius: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgb(24 28 39);
+  }
+`;
+
+const Main = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    max-width: 100vw;
+    min-height: 100vh;
+    background: #010103;
+    background-size: cover;
+`;
+
+const Container = styled.div`
+    border-radius: 7px;
+    margin-top: 60px;
+    width: 80%;
+    max-width: 450px;
+`;
+
+const Title = styled.h1`
+    text-align: left;
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 5px 0;
+    color: #cecece;
+`;
+
+const Paragraph = styled.p`
+    color: #aaabaf;
+    font-size: 1rem;
+`;
+
+const Input = styled.input`
+    text-align: left;
+    border-radius: 8px;
+    border: none;
+    width: 100%;
+    font-size: 0.9rem;
+    padding: 0.45rem 0.75rem;
+    color: #aaabaf;
+    border: solid 1px rgba(255, 255, 255, 0.2);
+    background: #000;
+    box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.2);
+    transition: all ease-in-out 0.1s;
+
+    &:focus {
+        outline: 0;
+        border-color: rgba(255, 255, 255, 0.5);
+    }
+`;
+
+const Output = styled.div`
+    margin: 15px 0;
+    color: #aaabaf;
+    word-break: break-word;
+    border-radius: 8px;
+    border: solid 1px #333;
+    padding: 8px;
+    background: #000;
+    box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.2);
+    font-family: Monospace, sans-serif;
+`;
+
+const ActionButton = styled.button`
+    font-size: 0.9rem;
+    padding: 5px 25px;
+    margin-right: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #888;
+    border: solid 1px #333;
+    background: transparent;
+    transition: all ease-in-out 0.1s;
+
+    &:hover {
+        color: #e6e6e6;
+        border-color: #e6e6e6;
+    }
+    &:active {
+        color: #fff;
+        border-color: #fff;
+    }
+`;
+
+const Example = styled.img`
+    display: block;
+    margin: 30px auto 0px;
+    max-width: 100%;
+`;
+
+const FooterStat = styled.div`
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    line-height: 1rem;
+    bottom: 1rem;
+    left: 50%;
+    transform: translate(-50%, 0);
+    background: #000;
+    padding: 1rem 1.25rem;
+    color: #fff;
+    border-radius: 0.55rem;
+    text-align: center;
+    box-shadow: 0 2px 15px -10px #a21caf;
+    min-width: 400px;
+
+    @media (max-width: 400px) {
+        font-size: 14px;
+        min-width: 365px;
+        padding: 0.75rem 1rem;
+    }
+
+    &:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 0.55rem;
+        border: 2px solid transparent;
+        background: linear-gradient(45deg, #be123c, #6b21a8, #3730a3) border-box;
+        -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+    }
+`;
