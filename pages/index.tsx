@@ -20,12 +20,6 @@ export default function Home({ userCount }: { userCount: number }) {
 
         setTimeout(() => setCopyState("Copy"), 1500);
     };
-
-    
-<a href="https://discord.com/users/776757761701838858">
- <img src="https://api.opinsel.de/api/776757761701838858?hideTimestamp=true&idleMessage=Just%20chillin'%20at%20the%20moment..." align="right" />
-</a>
-
     
     useEffect(() => {
         (async () => {
@@ -62,38 +56,9 @@ export default function Home({ userCount }: { userCount: number }) {
             </Head>
             <Main>
                 <Container>
-                    <Title>OpInsel profile readme 🏷️</Title>
-                    <Paragraph>Utilize OpInsel to display your Discord Presence in your GitHub Profile</Paragraph>
-                    <br />
-                    <Input onChange={el => setUserId(el.target.value)} placeholder="Enter your Discord ID" />
-                    {userId ? (
-                        <>
-                            <Output>
-                                [![Discord Presence](https://api.opinsel.de/api/{userId}
-                                )](https://discord.com/users/{userId})
-                            </Output>
-                            <ActionButton onClick={copy}>{copyState}</ActionButton>
-                            <a
-                                href="https://github.com/nils-afk"
-                                target="_blank"
-                                rel="noreferrer"
-                            >
-                                <ActionButton>Options</ActionButton>
-                            </a>
-                            <a
-                                style={{ textDecoration: "none" }}
-                                target="_blank"
-                                href={userError && "https://discord.gg/wBuyUSAegK"}
-                                rel="noreferrer"
-                            >
-                                <Example
-                                    src={`/api/${userId}`}
-                                    alt={`${userError || "Please provide a valid user ID!"}`}
-                                    style={{ color: "#ff8787" }}
-                                />
-                            </a>
-                        </>
-                    ) : null}
+                   <a href="https://discord.com/users/776757761701838858">
+ <img src="https://api.opinsel.de/api/776757761701838858?hideTimestamp=true&idleMessage=Just%20chillin'%20at%20the%20moment..." align="right" />
+</a>
                 </Container>
             </Main>
             <FooterStat>
