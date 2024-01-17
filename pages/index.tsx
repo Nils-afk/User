@@ -56,9 +56,9 @@ export default function Home({ userCount }: { userCount: number }) {
             </Head>
             <Main>
                 <Container>
-                   <a href="https://discord.com/users/776757761701838858">
- <img src="https://api.opinsel.de/api/776757761701838858?hideTimestamp=true&idleMessage=Just%20chillin'%20at%20the%20moment..." align="right" />
-</a>
+                    <a href="https://discord.com/users/776757761701838858">
+                        <img src="https://api.opinsel.de/api/776757761701838858?hideTimestamp=true&idleMessage=Just%20chillin'%20at%20the%20moment..." align="right" />
+                    </a>
                 </Container>
             </Main>
             <FooterStat>
