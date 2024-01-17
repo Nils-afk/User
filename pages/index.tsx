@@ -54,12 +54,17 @@ export default function Home({ userCount }: { userCount: number }) {
                     content="Utilize OpInsel to display your Discord Presence in your GitHub Profile"
                 />
             </Head>
-            <Main>
-                <Container>
-                    <a href="https://discord.com/users/776757761701838858">
-                        <img src="https://api.opinsel.de/api/776757761701838858?hideTimestamp=true&idleMessage=Just%20chillin'%20at%20the%20moment..." align="right" />
-                    </a>
-                </Container>
+<Main>
+    <Container>
+        <a href="https://discord.com/users/776757761701838858">
+            <img
+                src="https://api.opinsel.de/api/776757761701838858?hideTimestamp=true&idleMessage=Just%20chillin'%20at%20the%20moment..."
+                style={{ float: 'right' }}  // Hier wird der float-Stil verwendet, um das Bild nach rechts auszurichten
+                alt="Discord Presence"
+            />
+        </a>
+    </Container>
+</Main>
             </Main>
             <FooterStat>
                 OpInsel Staff Api schaut 1 Person zu!
