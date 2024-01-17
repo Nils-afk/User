@@ -29,7 +29,7 @@ export default function Home({ userCount }: { userCount: number }) {
             } catch (error: any) {
                 console.log(error.response);
                 if (error.response.status === 404 && error.response.data.code == "user_not_monitored")
-                    setUserError(`User not monitored by Lanyard, click to join the discord`);
+                    setUserError(`OpInsel Staff, click to join the discord`);
             }
         })();
     }, [userId]);
@@ -43,21 +43,21 @@ export default function Home({ userCount }: { userCount: number }) {
                     href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400&display=swap"
                     rel="stylesheet"
                 />
-                <title>Lanyard for GitHub Profile</title>
-                <meta property="og:title" content="Lanyard for GitHub Profile" key="title" />
+                <title>OpInsel for GitHub Profile</title>
+                <meta property="og:title" content="OpInsel for GitHub Profile" key="title" />
                 <meta
                     name="description"
-                    content="Utilize Lanyard to display your Discord Presence in your GitHub Profile"
+                    content="Utilize OpInsel to display your Discord Presence in your GitHub Profile"
                 />
                 <meta
                     name="og:description"
-                    content="Utilize Lanyard to display your Discord Presence in your GitHub Profile"
+                    content="Utilize OpInsel to display your Discord Presence in your GitHub Profile"
                 />
             </Head>
             <Main>
                 <Container>
                     <Title>OpInsel profile readme 🏷️</Title>
-                    <Paragraph>Utilize Lanyard to display your Discord Presence in your GitHub Profile</Paragraph>
+                    <Paragraph>Utilize OpInsel to display your Discord Presence in your GitHub Profile</Paragraph>
                     <br />
                     <Input onChange={el => setUserId(el.target.value)} placeholder="Enter your Discord ID" />
                     {userId ? (
@@ -77,7 +77,7 @@ export default function Home({ userCount }: { userCount: number }) {
                             <a
                                 style={{ textDecoration: "none" }}
                                 target="_blank"
-                                href={userError && "https://discord.gg/lanyard"}
+                                href={userError && "https://discord.gg/wBuyUSAegK"}
                                 rel="noreferrer"
                             >
                                 <Example
@@ -91,8 +91,7 @@ export default function Home({ userCount }: { userCount: number }) {
                 </Container>
             </Main>
             <FooterStat>
-                Lanyard Profile Readme has <div style={{ fontWeight: "bold", width: "3.2rem" }} ref={countRef} /> total
-                users!
+                OpInsel Staff Api schaut 1 Person zu!
             </FooterStat>
         </>
     );
@@ -100,7 +99,7 @@ export default function Home({ userCount }: { userCount: number }) {
 
 export async function getServerSideProps(ctx: any) {
     let userCount = await axios
-        .get("https://lanyard.cnrad.dev/api/getUserCount", { timeout: 1000 })
+        .get("https://api.opinsel.de/api/getUserCount", { timeout: 1000 })
         .then(res => res.data.count)
         .catch(() => 1000);
 
